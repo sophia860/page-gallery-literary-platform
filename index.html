@@ -553,7 +553,8 @@
         // Application State
         const state = {
             submissions: [],
-            currentSubmissionId: null
+            currentSubmissionId: null,
+            previousFocusElement: null
         };
 
         // DOM Elements
@@ -578,16 +579,26 @@
 
         // Load submissions from localStorage
         function loadSubmissions() {
-            const saved = localStorage.getItem('pageGallerySubmissions');
-            if (saved) {
-                state.submissions = JSON.parse(saved);
-                renderSubmissions();
+            try {
+                const saved = localStorage.getItem('pageGallerySubmissions');
+                if (saved) {
+                    state.submissions = JSON.parse(saved);
+                    renderSubmissions();
+                }
+            } catch (error) {
+                console.error('Failed to load submissions:', error);
+                state.submissions = [];
             }
         }
 
         // Save submissions to localStorage
         function saveSubmissions() {
-            localStorage.setItem('pageGallerySubmissions', JSON.stringify(state.submissions));
+            try {
+                localStorage.setItem('pageGallerySubmissions', JSON.stringify(state.submissions));
+            } catch (error) {
+                console.error('Failed to save submissions:', error);
+                showAlert('Unable to save submission. Please check your browser storage settings.', 'error');
+            }
         }
 
         // Attach event listeners
@@ -692,7 +703,7 @@
                     if (!field.value.trim()) {
                         isValid = false;
                         errorMessage = 'Content is required';
-                    } else if (field.value.length < 50) {
+                    } else if (field.value.trim().length < 50) {
                         isValid = false;
                         errorMessage = 'Content must be at least 50 characters';
                     } else if (field.value.length > MAX_CONTENT_LENGTH) {
@@ -736,7 +747,7 @@
 
             const formData = new FormData(e.target);
             const submission = {
-                id: Date.now(),
+                id: Date.now() + Math.random(),
                 title: formData.get('title').trim(),
                 author: formData.get('author').trim(),
                 email: formData.get('email').trim(),
@@ -840,6 +851,7 @@
             if (!submission) return;
 
             state.currentSubmissionId = submissionId;
+            state.previousFocusElement = document.activeElement;
 
             const date = new Date(submission.date);
             const formattedDate = date.toLocaleDateString('en-US', { 
@@ -866,6 +878,12 @@
         function closeModal() {
             elements.modal.classList.remove('show');
             state.currentSubmissionId = null;
+            
+            // Return focus to the element that opened the modal
+            if (state.previousFocusElement) {
+                state.previousFocusElement.focus();
+                state.previousFocusElement = null;
+            }
         }
 
         // Update submission status
@@ -873,19 +891,19 @@
             if (!state.currentSubmissionId) return;
 
             const newStatus = document.getElementById('statusSelect').value;
+            const validStatuses = ['pending', 'under-review', 'accepted', 'rejected'];
+            
+            if (!validStatuses.includes(newStatus)) {
+                showAlert('Invalid status selected', 'error');
+                return;
+            }
+
             const submission = state.submissions.find(s => s.id === state.currentSubmissionId);
             
             if (submission) {
                 submission.status = newStatus;
                 saveSubmissions();
                 renderSubmissions();
-                
-                // Update modal badge display
-                const statusBadge = document.querySelector(`[data-id="${state.currentSubmissionId}"] .status-badge`);
-                if (statusBadge) {
-                    statusBadge.className = `status-badge status-${newStatus}`;
-                    statusBadge.textContent = formatStatus(newStatus);
-                }
 
                 showAlert(`Status updated to: ${formatStatus(newStatus)}`, 'success');
                 closeModal();
