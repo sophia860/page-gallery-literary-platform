@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Gallery | Editor Dashboard</title>
+    <style>
+        :root {
+            --color-cream: #fefefe;
+            --color-cream-dark: #f8f8f8;
+            --color-slate: #1a1a1a;
+            --color-slate-light: #666666;
+            --color-teal: #2a7f8d;
+            --color-teal-hover: #236873;
+            --color-orange: #d88847;
+            --color-orange-light: #e6a572;
+            --color-red: #c0152f;
+            --color-green: #2d7d4e;
+            --color-text: #1a1a1a;
+            --color-text-muted: #999999;
+            --transition-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&display=swap');
+
+        body {
+            font-family: 'Cardo', Georgia, serif;
+            background: var(--color-cream);
+            color: var(--color-text);
+            line-height: 1.7;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: var(--color-cream);
+            color: var(--color-slate);
+            padding: 1.5rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 500;
+            letter-spacing: -0.01em;
+            color: var(--color-slate);
+        }
+
+        .editor-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--color-slate);
+            color: white;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            margin-left: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .nav {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            color: var(--color-slate);
+        }
+
+        .nav-link.active {
+            color: var(--color-slate);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem 1rem;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .user-menu:hover {
+            border-color: var(--color-slate);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--color-slate);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        .main {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 3rem;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 100px;
+            height: fit-content;
+        }
+
+        .queue-selector {
+            background: transparent;
+            margin-bottom: 2rem;
+        }
+
+        .queue-selector h3 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-text-muted);
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .queue-btn {
+            width: 100%;
+            padding: 0.75rem 0;
+            border: none;
+            background: transparent;
+            font-size: 0.9rem;
+            font-weight: 400;
+            cursor: pointer;
+            transition: color 0.2s;
+            text-align: left;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: var(--color-text-muted);
+            font-family: 'Cardo', Georgia, serif;
+        }
+
+        .queue-btn:hover {
+            color: var(--color-slate);
+        }
+
+        .queue-btn.active {
+            color: var(--color-slate);
+            font-weight: 500;
+        }
+
+        .queue-count {
+            background: var(--color-slate);
+            color: white;
+            padding: 0.125rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .queue-count.urgent {
+            background: var(--color-orange);
+        }
+
+        .stats-panel {
+            background: white;
+            border: 1px solid #e8e8e8;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stats-panel h4 {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--color-text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .stat-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .stat-value {
+            font-weight: 500;
+            color: var(--color-slate);
+        }
+
+        .content-area {
+            background: white;
+            border-radius: 0;
+            padding: 2.5rem;
+            min-height: 600px;
+            border: 1px solid #e8e8e8;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .section-header h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--color-slate);
+        }
+
+        .filter-tabs {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .filter-tab {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e8e8e8;
+            background: transparent;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Cardo', Georgia, serif;
+        }
+
+        .filter-tab:hover {
+            border-color: var(--color-slate);
+        }
+
+        .filter-tab.active {
+            background: var(--color-slate);
+            color: white;
+            border-color: var(--color-slate);
+        }
+
+        .submissions-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .submission-row {
+            background: white;
+            border: 1px solid #e8e8e8;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .submission-row:hover {
+            border-color: var(--color-slate);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .submission-row.unread {
+            border-left: 3px solid var(--color-orange);
+        }
+
+        .submission-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 1rem;
+        }
+
+        .submission-info h3 {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--color-slate);
+            margin-bottom: 0.25rem;
+        }
+
+        .submission-author {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+        }
+
+        .submission-tags {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .tag {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .tag-poetry {
+            background: rgba(42, 127, 141, 0.15);
+            color: var(--color-teal);
+        }
+
+        .tag-prose {
+            background: rgba(216, 136, 71, 0.15);
+            color: #a85e2a;
+        }
+
+        .tag-essay {
+            background: rgba(45, 125, 78, 0.15);
+            color: var(--color-green);
+        }
+
+        .tag-hybrid {
+            background: rgba(192, 21, 47, 0.15);
+            color: var(--color-red);
+        }
+
+        .submission-date {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+        }
+
+        .submission-excerpt {
+            font-size: 0.95rem;
+            color: var(--color-slate-light);
+            line-height: 1.6;
+            font-style: italic;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .submission-actions {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .btn-small {
+            padding: 0.5rem 1rem;
+            border: 1px solid #e8e8e8;
+            background: white;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Cardo', Georgia, serif;
+        }
+
+        .btn-small:hover {
+            background: var(--color-cream-dark);
+            border-color: var(--color-slate);
+        }
+
+        .btn-accept {
+            background: var(--color-green);
+            color: white;
+            border-color: var(--color-green);
+        }
+
+        .btn-accept:hover {
+            background: #256638;
+            border-color: #256638;
+        }
+
+        .btn-reject {
+            background: var(--color-red);
+            color: white;
+            border-color: var(--color-red);
+        }
+
+        .btn-reject:hover {
+            background: #9a1126;
+            border-color: #9a1126;
+        }
+
+        .btn-primary {
+            background: var(--color-slate);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: 'Cardo', Georgia, serif;
+        }
+
+        .btn-primary:hover {
+            background: #000000;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--color-slate);
+            border: 1px solid #e8e8e8;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Cardo', Georgia, serif;
+        }
+
+        .btn-secondary:hover {
+            background: var(--color-cream-dark);
+            border-color: var(--color-slate);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid #e8e8e8;
+        }
+
+        .modal-header {
+            padding: 2rem;
+            border-bottom: 1px solid #e8e8e8;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+
+        .modal-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+        }
+
+        .modal-title h2 {
+            font-size: 1.75rem;
+            font-weight: 600;
+            color: var(--color-slate);
+            margin-bottom: 0.5rem;
+        }
+
+        .modal-subtitle {
+            font-size: 0.95rem;
+            color: var(--color-text-muted);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--color-text-muted);
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: var(--color-slate);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .work-content {
+            font-size: 1.05rem;
+            line-height: 1.8;
+            color: var(--color-slate);
+            white-space: pre-wrap;
+            margin-bottom: 2rem;
+        }
+
+        .editor-notes {
+            background: var(--color-cream-dark);
+            border: 1px solid #e8e8e8;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .editor-notes h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--color-slate);
+        }
+
+        .editor-notes textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 0.75rem;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-family: 'Cardo', Georgia, serif;
+            resize: vertical;
+            background: white;
+        }
+
+        .editor-notes textarea:focus {
+            outline: none;
+            border-color: var(--color-slate);
+        }
+
+        .modal-footer {
+            padding: 1.5rem 2rem;
+            border-top: 1px solid #e8e8e8;
+            display: flex;
+            gap: 1rem;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--color-cream-dark);
+        }
+
+        .decision-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .publish-option {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--color-slate-light);
+        }
+
+        .publish-option input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--color-text-muted);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--color-slate-light);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 968px) {
+            .main {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            .queue-selector {
+                display: flex;
+                gap: 0.5rem;
+                overflow-x: auto;
+                padding-bottom: 0.5rem;
+            }
+
+            .queue-btn {
+                min-width: 140px;
+            }
+
+            .submission-meta {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .modal-content {
+                max-width: 100%;
+            }
+
+            .modal-footer {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .decision-buttons {
+                width: 100%;
+            }
+
+            .decision-buttons button {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                Page Gallery
+                <span class="editor-badge">Editor</span>
+            </div>
+            <nav class="nav">
+                <a class="nav-link active">Dashboard</a>
+                <a class="nav-link" href="#analytics">Analytics</a>
+                <a class="nav-link" href="#settings">Settings</a>
+                <div class="user-menu" onclick="showUserMenu()">
+                    <div class="user-avatar">EH</div>
+                    <span style="font-size: 0.9rem;">Editor</span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <aside class="sidebar">
+            <div class="queue-selector">
+                <h3>Submission Queue</h3>
+                <button class="queue-btn active" data-queue="pending">
+                    <span>Pending Review</span>
+                    <span class="queue-count urgent" id="count-pending">12</span>
+                </button>
+                <button class="queue-btn" data-queue="under-review">
+                    <span>Under Review</span>
+                    <span class="queue-count" id="count-under-review">8</span>
+                </button>
+                <button class="queue-btn" data-queue="accepted">
+                    <span>Accepted</span>
+                    <span class="queue-count" id="count-accepted">15</span>
+                </button>
+                <button class="queue-btn" data-queue="scheduled">
+                    <span>Scheduled</span>
+                    <span class="queue-count" id="count-scheduled">6</span>
+                </button>
+                <button class="queue-btn" data-queue="rejected">
+                    <span>Rejected</span>
+                    <span class="queue-count" id="count-rejected">23</span>
+                </button>
+            </div>
+
+            <div class="stats-panel">
+                <h4>This Month</h4>
+                <div class="stat-item">
+                    <span>Submissions</span>
+                    <span class="stat-value" id="stat-submissions">64</span>
+                </div>
+                <div class="stat-item">
+                    <span>Reviewed</span>
+                    <span class="stat-value" id="stat-reviewed">46</span>
+                </div>
+                <div class="stat-item">
+                    <span>Acceptance Rate</span>
+                    <span class="stat-value" id="stat-acceptance">23%</span>
+                </div>
+                <div class="stat-item">
+                    <span>Avg. Review Time</span>
+                    <span class="stat-value" id="stat-avg-time">8 days</span>
+                </div>
+            </div>
+        </aside>
+
+        <div class="content-area">
+            <div class="section-header">
+                <h2 id="queue-title">Pending Review</h2>
+                <div class="filter-tabs">
+                    <button class="filter-tab active" data-filter="all">All</button>
+                    <button class="filter-tab" data-filter="poetry">Poetry</button>
+                    <button class="filter-tab" data-filter="prose">Prose</button>
+                    <button class="filter-tab" data-filter="essay">Essay</button>
+                </div>
+            </div>
+
+            <div class="submissions-list" id="submissions-list">
+                <!-- Submissions will be rendered here by JavaScript -->
+            </div>
+        </div>
+    </main>
+
+    <!-- Review Modal -->
+    <div class="modal" id="review-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-header-content">
+                    <div class="modal-title">
+                        <h2 id="modal-title">Transit Elegies</h2>
+                        <div class="modal-subtitle">
+                            <span id="modal-author">by Sarah Chen</span> • 
+                            <span id="modal-type" class="tag tag-poetry">Poetry</span> • 
+                            <span id="modal-date">Jan 28, 2026</span>
+                        </div>
+                    </div>
+                    <button class="close-modal" onclick="closeModal()">&times;</button>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="work-content" id="modal-content"></div>
+
+                <div class="editor-notes">
+                    <h4>Editorial Notes</h4>
+                    <textarea id="editor-notes-field" placeholder="Add notes for the writer or other editors..."></textarea>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <div class="publish-option">
+                    <input type="checkbox" id="publish-immediately" />
+                    <label for="publish-immediately">Publish immediately upon acceptance</label>
+                </div>
+                <div class="decision-buttons">
+                    <button class="btn-secondary" onclick="closeModal()">Close</button>
+                    <button class="btn-secondary btn-reject" onclick="rejectSubmission()">Reject with Feedback</button>
+                    <button class="btn-primary btn-accept" onclick="acceptSubmission()">Accept</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample submission data - expanded database
+        const allSubmissions = {
+            pending: [
+                {
+                    id: 1,
+                    title: 'Transit Elegies',
+                    author: 'Sarah Chen',
+                    email: 'sarah.chen@email.com',
+                    type: 'poetry',
+                    date: 'Jan 28, 2026',
+                    unread: true,
+                    excerpt: 'The subway lurches and I think of / how we measure time in stops / between here and wherever we\'re going...',
+                    content: `The subway lurches and I think of
+how we measure time in stops
+between here and wherever we're going.
+
+Each platform a comma,
+each tunnel a held breath,
+each arrival a question
+we answer with our feet.
+
+Someone's coffee spills
+in slow motion across the floor—
+a small disaster
+no one will remember
+by the time we surface
+into the day's bright amnesia.
+
+The doors close. The doors open.
+We step through portals
+that lead to other portals
+in an endless chain of leaving
+and arriving and leaving again.
+
+I have spent years
+learning the rhythm of departure,
+the particular music
+of train wheels on tracks,
+the way goodbye sounds
+when it's muffled by
+the hiss of hydraulic doors.
+
+At Union Square, a woman
+boards with a suitcase
+and a dying plant.
+She holds it like a child.
+
+I wonder if she's learned
+what I'm still learning—
+that every journey
+is also a form of staying,
+that motion can be
+its own kind of stillness,
+
+that sometimes the only way
+to remain yourself
+is to keep moving.`
+                },
+                {
+                    id: 2,
+                    title: 'Between Platforms',
+                    author: 'Marcus Williams',
+                    email: 'm.williams@email.com',
+                    type: 'prose',
+                    date: 'Jan 27, 2026',
+                    unread: true,
+                    excerpt: 'She told me once that commuting is just rehearsal for leaving. I didn\'t understand then, staring at the blur of platforms...',
+                    content: `She told me once that commuting is just rehearsal for leaving. I didn't understand then, staring at the blur of platforms passing outside the window, each one a place I could have gotten off but didn't.
+
+Now I think about it every time I board the train. The doors that close behind you. The moment when the train pulls away and you're committed to the motion, no longer here but not yet there.
+
+Today a woman got on at 14th Street carrying a suitcase and a potted plant. The plant was too large, its leaves brushing against other passengers. She held it carefully, protectively, as if it were a child.
+
+I wanted to ask her where she was going, this woman with her plant and her suitcase, leaving or arriving at some threshold I couldn't see. But the train was too loud, and the moment passed, and at Union Square she got off, disappearing into the crowd with her careful cargo.
+
+I rode three more stops before I realized I'd missed my transfer.
+
+Some days the commute feels like the only honest thing I do—this repeated motion between two fixed points, this daily practice of departure and return. No pretense. Just the mechanical rhythm of leaving and arriving, the body moving through space while the mind floats somewhere else entirely.
+
+My father used to say that you could judge a city by its transit system. Not by its efficiency or cleanliness, but by the faces of its commuters. Whether they looked at each other or away. Whether they held doors or let them close.
+
+By that measure, we're all leaving. We're all between platforms, suspended in the infrastructure of our daily migrations, learning how to be alone together.`
+                },
+                {
+                    id: 3,
+                    title: 'The Architecture of Waiting',
+                    author: 'Jasmine Lee',
+                    email: 'jasmine.lee@email.com',
+                    type: 'essay',
+                    date: 'Jan 26, 2026',
+                    unread: false,
+                    excerpt: 'There\'s a particular geometry to train stations—the way platforms stretch into distance, how benches face the tracks like supplicants...',
+                    content: `There's a particular geometry to train stations—the way platforms stretch into distance, how benches face the tracks like supplicants at an altar.... I've spent countless hours in these liminal spaces, studying the architecture of waiting. The yellow safety line that marks the boundary between patience and danger. The digital boards that promise arrivals in minutes that feel like hours.
+
+Train stations are designed for movement, yet they demand stillness. Stand here. Wait there. Do not cross this line.
+
+There's a woman I see most mornings at Penn Station. She arrives early, always wearing the same navy coat, and sits on the same bench facing Track 7. She never boards a train. I've been observing her for three months now, this ritual of arrival without departure.
+
+I wonder what she's waiting for. Or if waiting itself has become the destination.
+
+The French have a phrase: l'appel du vide—the call of the void. That strange pull you feel standing at the edge of something. At train stations, I feel its opposite: l'appel du mouvement—the call of motion. The magnetic pull of elsewhere.
+
+But perhaps the woman in the navy coat understands something I'm still learning. That sometimes the bravest thing we can do is stay. To practice the difficult art of remaining in place while the world rushes past.
+
+The architecture of waiting teaches us this: that platforms are not just places of departure, but of possibility. Every bench a potential story. Every arrival board a promise that could be kept or broken.
+
+And sometimes, the journey is simply learning to sit still.`
+                },
+                {
+                    id: 4,
+                    title: 'Threshold / Body / Door',
+                    author: 'Alex Rivera',
+                    email: 'alex.r@email.com',
+                    type: 'hybrid',
+                    date: 'Jan 25, 2026',
+                    unread: true,
+                    excerpt: 'Every door is a question / you answer with your body. [A series of photographs follows: turnstiles, train doors, office entrances...]',
+                    content: `Every door is a question
+you answer with your body.
+
+[Photograph: Subway turnstile, 6:47 AM]
+
+The body remembers
+before the mind decides—
+which pocket holds the MetroCard,
+how much pressure to lean forward,
+the exact angle of hip
+to clear the rotating arms.
+
+[Photograph: Train doors closing, motion blur]
+
+In Japanese, the word for threshold
+is shikii. It means
+the boundary wood,
+the place where inside
+becomes outside
+or outside becomes in.
+
+[Photograph: Empty platform, doors about to close]
+
+My therapist says I have
+boundary issues.
+I think she means
+I've forgotten how to tell
+where I end
+and the world begins.
+
+[Photograph: Reflection in train window at dusk]
+
+Every morning, I practice:
+Stand behind yellow line.
+Wait for doors.
+Step through.
+Repeat.
+
+[Photograph: Turnstile arms at rest, seen from below]
+
+The doors close. The doors open.
+The body moves through space
+that is neither here nor there—
+just the small deaths
+of daily threshold crossings,
+just the resurrections
+of arrival.
+
+[Photograph: Hand reaching for door as it closes]
+
+Every door is a question.
+Every crossing, an answer
+the body gives
+without permission.`
+                }
+            ],
+            underReview: [
+                {
+                    id: 5,
+                    title: 'Ghost Stations',
+                    author: 'Thomas Park',
+                    email: 't.park@email.com',
+                    type: 'prose',
+                    date: 'Jan 24, 2026',
+                    unread: false,
+                    excerpt: 'In New York, there are stations that no longer exist...',
+                    content: 'Ghost stations content...'
+                }
+            ],
+            accepted: [],
+            scheduled: [],
+            rejected: []
+        };
+
+        // State management
+        let currentQueue = 'pending';
+        let currentFilter = 'all';
+        let currentSubmissionId = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderSubmissions();
+            setupEventListeners();
+            updateCounts();
+        });
+
+        function setupEventListeners() {
+            // Queue navigation
+            document.querySelectorAll('.queue-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.queue-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    currentQueue = this.getAttribute('data-queue');
+                    const queueName = this.querySelector('span').textContent;
+                    document.getElementById('queue-title').textContent = queueName;
+                    
+                    renderSubmissions();
+                });
+            });
+
+            // Filter tabs
+            document.querySelectorAll('.filter-tab').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    currentFilter = this.getAttribute('data-filter');
+                    renderSubmissions();
+                });
+            });
+
+            // Modal background click
+            document.getElementById('review-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+
+            // ESC to close modal
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+        }
+
+        function renderSubmissions() {
+            const container = document.getElementById('submissions-list');
+            const queueKey = currentQueue.replace('-', '');
+            const submissions = allSubmissions[queueKey] || [];
+            
+            const filtered = currentFilter === 'all' 
+                ? submissions 
+                : submissions.filter(s => s.type === currentFilter);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">${getEmptyIcon(currentQueue)}</div>
+                        <h3>${getEmptyMessage(currentQueue)}</h3>
+                        <p>${getEmptyDescription(currentQueue)}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(submission => `
+                <div class="submission-row ${submission.unread ? 'unread' : ''}" data-id="${submission.id}" onclick="openSubmission(${submission.id})">
+                    <div class="submission-meta">
+                        <div class="submission-info">
+                            <h3>${submission.title}</h3>
+                            <div class="submission-author">by ${submission.author} • ${submission.email}</div>
+                        </div>
+                        <div class="submission-tags">
+                            <span class="tag tag-${submission.type}">${submission.type.charAt(0).toUpperCase() + submission.type.slice(1)}</span>
+                            <span class="submission-date">${submission.date}</span>
+                        </div>
+                    </div>
+                    <div class="submission-excerpt">
+                        "${submission.excerpt}"
+                    </div>
+                    <div class="submission-actions" onclick="event.stopPropagation()">
+                        <button class="btn-small" onclick="openSubmission(${submission.id})">Read Full</button>
+                        ${currentQueue === 'pending' ? `
+                            <button class="btn-small btn-accept" onclick="quickAccept(${submission.id})">✓ Accept</button>
+                            <button class="btn-small btn-reject" onclick="quickReject(${submission.id})">✕ Reject</button>
+                        ` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function openSubmission(id) {
+            const submission = findSubmission(id);
+            
+            if (!submission) {
+                alert('Submission not found');
+                return;
+            }
+            
+            currentSubmissionId = id;
+            
+            document.getElementById('modal-title').textContent = submission.title;
+            document.getElementById('modal-author').textContent = `by ${submission.author}`;
+            document.getElementById('modal-type').textContent = submission.type.charAt(0).toUpperCase() + submission.type.slice(1);
+            document.getElementById('modal-type').className = `tag tag-${submission.type}`;
+            document.getElementById('modal-date').textContent = submission.date;
+            document.getElementById('modal-content').textContent = submission.content;
+            document.getElementById('editor-notes-field').value = '';
+            document.getElementById('publish-immediately').checked = false;
+            
+            document.getElementById('review-modal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+            
+            // Mark as read
+            if (submission.unread) {
+                submission.unread = false;
+                renderSubmissions();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('review-modal').classList.remove('active');
+            document.body.style.overflow = '';
+            currentSubmissionId = null;
+        }
+
+        function quickAccept(id) {
+            if (confirm('Accept this submission?\n\n(You can add notes by opening the full review)')) {
+                moveSubmission(id, 'accepted');
+                showNotification(`✓ Submission accepted and moved to Accepted queue`, 'success');
+            }
+        }
+
+        function quickReject(id) {
+            if (confirm('Reject this submission?\n\nConsider opening the full review to add feedback for the writer.')) {
+                moveSubmission(id, 'rejected');
+                showNotification('Submission rejected and moved to Rejected queue', 'info');
+            }
+        }
+
+        function acceptSubmission() {
+            if (!currentSubmissionId) return;
+            
+            const submission = findSubmission(currentSubmissionId);
+            const publishImmediately = document.getElementById('publish-immediately').checked;
+            const notes = document.getElementById('editor-notes-field').value;
+            
+            const status = publishImmediately ? 'Published immediately' : 'Accepted, awaiting publication schedule';
+            const message = `✓ Submission accepted!\n\n"${submission.title}" by ${submission.author}\n\nStatus: ${status}${notes.trim() ? '\n\nNotes saved for record.' : ''}`;
+            
+            moveSubmission(currentSubmissionId, publishImmediately ? 'scheduled' : 'accepted');
+            closeModal();
+            showNotification(message, 'success');
+        }
+
+        function rejectSubmission() {
+            if (!currentSubmissionId) return;
+            
+            const submission = findSubmission(currentSubmissionId);
+            const notes = document.getElementById('editor-notes-field').value;
+            
+            if (!notes.trim()) {
+                if (!confirm('No feedback provided. Reject without feedback?')) {
+                    return;
+                }
+            }
+            
+            const message = `Submission rejected.\n\n"${submission.title}" by ${submission.author}${notes.trim() ? '\n\nFeedback will be sent to: ' + submission.email : ''}`;
+            
+            moveSubmission(currentSubmissionId, 'rejected');
+            closeModal();
+            showNotification(message, 'info');
+        }
+
+        function moveSubmission(id, toQueue) {
+            const submission = findSubmission(id);
+            if (!submission) return;
+            
+            // Remove from current queue
+            for (let queue in allSubmissions) {
+                allSubmissions[queue] = allSubmissions[queue].filter(s => s.id !== id);
+            }
+            
+            // Add to new queue
+            const queueKey = toQueue.replace('-', '');
+            allSubmissions[queueKey].push(submission);
+            
+            // Update UI
+            renderSubmissions();
+            updateCounts();
+            
+            // Animate removal
+            const row = document.querySelector(`[data-id="${id}"]`);
+            if (row) {
+                row.style.transition = 'opacity 0.3s, transform 0.3s';
+                row.style.opacity = '0';
+                row.style.transform = 'translateX(20px)';
+            }
+        }
+
+        function findSubmission(id) {
+            for (let queue in allSubmissions) {
+                const found = allSubmissions[queue].find(s => s.id === id);
+                if (found) return found;
+            }
+            return null;
+        }
+
+        function updateCounts() {
+            document.getElementById('count-pending').textContent = allSubmissions.pending.length;
+            document.getElementById('count-under-review').textContent = allSubmissions.underReview.length;
+            document.getElementById('count-accepted').textContent = allSubmissions.accepted.length;
+            document.getElementById('count-scheduled').textContent = allSubmissions.scheduled.length;
+            document.getElementById('count-rejected').textContent = allSubmissions.rejected.length;
+            
+            // Update stats
+            const totalSubmissions = Object.values(allSubmissions).reduce((sum, arr) => sum + arr.length, 0);
+            const reviewed = allSubmissions.accepted.length + allSubmissions.rejected.length;
+            const acceptanceRate = reviewed > 0 ? Math.round((allSubmissions.accepted.length / reviewed) * 100) : 0;
+            
+            document.getElementById('stat-submissions').textContent = totalSubmissions;
+            document.getElementById('stat-reviewed').textContent = reviewed;
+            document.getElementById('stat-acceptance').textContent = acceptanceRate + '%';
+        }
+
+        function getEmptyIcon(queue) {
+            const icons = {
+                'pending': '📝',
+                'under-review': '👁️',
+                'accepted': '✓',
+                'scheduled': '📅',
+                'rejected': '📋'
+            };
+            return icons[queue] || '📄';
+        }
+
+        function getEmptyMessage(queue) {
+            const messages = {
+                'pending': 'No Pending Submissions',
+                'under-review': 'No Submissions Under Review',
+                'accepted': 'No Accepted Submissions',
+                'scheduled': 'No Scheduled Publications',
+                'rejected': 'No Rejected Submissions'
+            };
+            return messages[queue] || 'No Submissions';
+        }
+
+        function getEmptyDescription(queue) {
+            const descriptions = {
+                'pending': 'All submissions have been reviewed',
+                'under-review': 'Move submissions here when actively reviewing',
+                'accepted': 'Accepted pieces will appear here',
+                'scheduled': 'Schedule accepted pieces for publication',
+                'rejected': 'Rejected submissions are archived here'
+            };
+            return descriptions[queue] || '';
+        }
+
+        function showNotification(message, type = 'info') {
+            alert(message); // In production, replace with a proper notification system
+        }
+
+        function showUserMenu() {
+            alert('User menu:\n\n• Profile Settings\n• Change Password\n• Notification Preferences\n• Log Out');
+        }
+    </script>
+</body>
+</html>
