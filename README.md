@@ -28,9 +28,12 @@ Page Gallery is a web-based platform designed to facilitate the submission and e
 page-gallery-literary-platform/
 |-- .github/
 |   |-- agents/
-|       |-- my-agent.agent.md
-|-- editor-dashboard.html      # Main editor dashboard interface
-|-- README.md                  # This file
+|       |-- my-agent.agent.md    # GitHub agent configuration
+|-- src/
+|   |-- editor-dashboard.html    # Main editor dashboard interface
+|-- CONTRIBUTING.md              # Contribution guidelines
+|-- LICENSE                      # MIT License
+|-- README.md                    # This file
 ```
 
 ## Getting Started
@@ -43,7 +46,7 @@ page-gallery-literary-platform/
    ```bash
    git clone https://github.com/sophia860/page-gallery-literary-platform.git
    ```
-2. Open `editor-dashboard.html` in your web browser
+2. Open `src/editor-dashboard.html` in your web browser
 
 ## Usage
 
@@ -64,11 +67,11 @@ The editor dashboard provides a comprehensive interface for managing literary su
 
 ## Contributing
 
-Contributions are welcome! Please read our contributing guidelines before submitting pull requests.
+Contributions are welcome! Please read our [CONTRIBUTING.md](CONTRIBUTING.md) guidelines before submitting pull requests.
 
 ## License
 
-This project is open source. See LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Contact
 
