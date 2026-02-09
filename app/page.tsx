@@ -5,8 +5,23 @@ import { Cardo } from "next/font/google"
 
 const cardo = Cardo({ subsets: ["latin"], weight: ["400", "700"] })
 
+type SubmissionType = "poetry" | "prose" | "essay" | "hybrid"
+type QueueType = "pending" | "underReview" | "accepted" | "scheduled" | "rejected"
+
+interface Submission {
+  id: number
+  title: string
+  author: string
+  email: string
+  type: SubmissionType
+  date: string
+  unread: boolean
+  excerpt: string
+  content: string
+}
+
 // Sample submission data
-const initialSubmissions = {
+const initialSubmissions: Record<QueueType, Submission[]> = {
   pending: [
     {
       id: 1,
@@ -195,24 +210,9 @@ without permission.`,
       content: "Ghost stations content...",
     },
   ],
-  accepted: [] as Submission[],
-  scheduled: [] as Submission[],
-  rejected: [] as Submission[],
-}
-
-type SubmissionType = "poetry" | "prose" | "essay" | "hybrid"
-type QueueType = "pending" | "underReview" | "accepted" | "scheduled" | "rejected"
-
-interface Submission {
-  id: number
-  title: string
-  author: string
-  email: string
-  type: SubmissionType
-  date: string
-  unread: boolean
-  excerpt: string
-  content: string
+  accepted: [],
+  scheduled: [],
+  rejected: [],
 }
 
 const queueDisplayNames: Record<QueueType, string> = {
