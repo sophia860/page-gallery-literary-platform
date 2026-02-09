@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Gallery | Admin Utilities</title>
+    <style>
+        :root {
+            --color-cream: #fefefe;
+            --color-cream-dark: #f8f8f8;
+            --color-slate: #1a1a1a;
+            --color-slate-light: #666666;
+            --color-teal: #2a7f8d;
+            --color-teal-hover: #236873;
+            --color-orange: #d88847;
+            --color-red: #c0152f;
+            --color-green: #2d7d4e;
+            --color-text: #1a1a1a;
+            --color-text-muted: #999999;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        @import url('https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&display=swap');
+
+        body {
+            font-family: 'Cardo', Georgia, serif;
+            background: var(--color-cream);
+            color: var(--color-text);
+            line-height: 1.7;
+        }
+
+        .header {
+            background: var(--color-cream);
+            color: var(--color-slate);
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid #e8e8e8;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--color-slate);
+        }
+
+        .admin-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--color-red);
+            color: white;
+            font-size: 0.75rem;
+            border-radius: 4px;
+            margin-left: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-link {
+            color: var(--color-text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.2s;
+        }
+
+        .nav-link:hover {
+            color: var(--color-slate);
+        }
+
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--color-slate);
+            margin-bottom: 0.5rem;
+        }
+
+        .page-description {
+            font-size: 1rem;
+            color: var(--color-text-muted);
+            margin-bottom: 3rem;
+        }
+
+        .utilities-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 2rem;
+        }
+
+        .utility-card {
+            background: white;
+            border: 1px solid #e8e8e8;
+            padding: 2rem;
+        }
+
+        .utility-card h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--color-slate);
+            margin-bottom: 0.5rem;
+        }
+
+        .utility-card p {
+            font-size: 0.9rem;
+            color: var(--color-text-muted);
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--color-slate);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #e8e8e8;
+            border-radius: 4px;
+            font-size: 0.95rem;
+            font-family: 'Cardo', Georgia, serif;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--color-slate);
+        }
+
+        .form-input.error {
+            border-color: var(--color-red);
+        }
+
+        .form-help {
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+            margin-top: 0.25rem;
+        }
+
+        .btn-primary {
+            background: var(--color-slate);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: 'Cardo', Georgia, serif;
+        }
+
+        .btn-primary:hover {
+            background: #000000;
+        }
+
+        .btn-primary:disabled {
+            background: var(--color-text-muted);
+            cursor: not-allowed;
+        }
+
+        .btn-danger {
+            background: var(--color-red);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            font-weight: 400;
+            cursor: pointer;
+            transition: background 0.2s;
+            font-family: 'Cardo', Georgia, serif;
+        }
+
+        .btn-danger:hover {
+            background: #9a1126;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .alert-success {
+            background: rgba(45, 125, 78, 0.1);
+            color: var(--color-green);
+            border: 1px solid var(--color-green);
+        }
+
+        .alert-error {
+            background: rgba(192, 21, 47, 0.1);
+            color: var(--color-red);
+            border: 1px solid var(--color-red);
+        }
+
+        .alert-info {
+            background: rgba(42, 127, 141, 0.1);
+            color: var(--color-teal);
+            border: 1px solid var(--color-teal);
+        }
+
+        .alert-warning {
+            background: rgba(216, 136, 71, 0.1);
+            color: var(--color-orange);
+            border: 1px solid var(--color-orange);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.6s linear infinite;
+            margin-left: 0.5rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .warning-box {
+            background: rgba(192, 21, 47, 0.05);
+            border: 1px solid var(--color-red);
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1.5rem;
+        }
+
+        .warning-box h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-red);
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-box p {
+            font-size: 0.85rem;
+            color: var(--color-slate-light);
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .utilities-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                Page Gallery
+                <span class="admin-badge">Admin</span>
+            </div>
+            <a href="editor-dashboard.html" class="nav-link">← Back to Dashboard</a>
+        </div>
+    </header>
+
+    <main class="main">
+        <h1 class="page-title">Admin Utilities</h1>
+        <p class="page-description">Manage user accounts and system settings</p>
+
+        <div class="utilities-grid">
+            <!-- Password Reset Utility -->
+            <div class="utility-card">
+                <h2>Reset User Password</h2>
+                <p>Send a password reset email to any user. They'll receive a secure link to set a new password.</p>
+
+                <div class="warning-box">
+                    <h4>⚠️ Security Notice</h4>
+                    <p>For security reasons, passwords cannot be set directly. Users must reset their password via email to ensure proper authentication.</p>
+                </div>
+
+                <div id="reset-alert" class="alert hidden"></div>
+
+                <form id="reset-password-form">
+                    <div class="form-group">
+                        <label class="form-label" for="user-email">User Email Address</label>
+                        <input 
+                            type="email" 
+                            id="user-email" 
+                            class="form-input" 
+                            placeholder="sophia@pagegalleryjournal.com"
+                            required
+                        />
+                        <div class="form-help">Enter the email address of the user account to reset</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="reset-url">Reset Page URL (Optional)</label>
+                        <input 
+                            type="url" 
+                            id="reset-url" 
+                            class="form-input" 
+                            placeholder="https://pagegalleryjournal.com/reset-password"
+                        />
+                        <div class="form-help">Custom redirect URL for the password reset page (uses default if empty)</div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="send-reset-btn">
+                        Send Password Reset Email
+                    </button>
+                </form>
+            </div>
+
+            <!-- User Management -->
+            <div class="utility-card">
+                <h2>User Management</h2>
+                <p>View and manage user accounts in the system.</p>
+
+                <div id="user-info-alert" class="alert hidden"></div>
+
+                <form id="user-lookup-form">
+                    <div class="form-group">
+                        <label class="form-label" for="lookup-email">Lookup User</label>
+                        <input 
+                            type="email" 
+                            id="lookup-email" 
+                            class="form-input" 
+                            placeholder="user@example.com"
+                            required
+                        />
+                        <div class="form-help">Find user information by email address</div>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="lookup-btn">
+                        Search User
+                    </button>
+                </form>
+
+                <div id="user-details" class="hidden" style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e8e8e8;">
+                    <h3 style="font-size: 1rem; margin-bottom: 1rem;">User Details</h3>
+                    <div id="user-details-content" style="font-size: 0.9rem; color: var(--color-slate-light);">
+                        <!-- User details will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script type="module">
+        import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+        // Initialize Supabase client
+        // TODO: Replace with your actual Supabase credentials
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Check authentication on load
+        checkAuth();
+
+        async function checkAuth() {
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (!session) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // TODO: Add additional admin role check here
+            // For example, check if user has admin role in your database
+        }
+
+        // Password Reset Form Handler
+        document.getElementById('reset-password-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('user-email').value.trim();
+            const resetUrl = document.getElementById('reset-url').value.trim();
+            const btn = document.getElementById('send-reset-btn');
+            const alert = document.getElementById('reset-alert');
+            
+            // Disable button and show loading
+            btn.disabled = true;
+            btn.innerHTML = 'Sending...<span class="loading-spinner"></span>';
+            alert.classList.add('hidden');
+            
+            try {
+                // Send password reset email
+                const options = {
+                    redirectTo: resetUrl || `${window.location.origin}/reset-password.html`
+                };
+                
+                const { error } = await supabase.auth.resetPasswordForEmail(email, options);
+                
+                if (error) throw error;
+                
+                // Success
+                showAlert(
+                    'reset-alert',
+                    'success',
+                    `✓ Password reset email sent successfully to ${email}. The user will receive instructions to reset their password.`
+                );
+                
+                // Clear form
+                document.getElementById('reset-password-form').reset();
+                
+            } catch (error) {
+                console.error('Password reset error:', error);
+                showAlert(
+                    'reset-alert',
+                    'error',
+                    `Error: ${error.message || 'Failed to send password reset email. Please try again.'}`
+                );
+            } finally {
+                // Re-enable button
+                btn.disabled = false;
+                btn.innerHTML = 'Send Password Reset Email';
+            }
+        });
+
+        // User Lookup Form Handler
+        document.getElementById('user-lookup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('lookup-email').value.trim();
+            const btn = document.getElementById('lookup-btn');
+            const alert = document.getElementById('user-info-alert');
+            const detailsContainer = document.getElementById('user-details');
+            const detailsContent = document.getElementById('user-details-content');
+            
+            // Disable button and show loading
+            btn.disabled = true;
+            btn.innerHTML = 'Searching...<span class="loading-spinner"></span>';
+            alert.classList.add('hidden');
+            detailsContainer.classList.add('hidden');
+            
+            try {
+                // Note: This requires admin privileges or a server-side function
+                // For now, we'll show a message about this limitation
+                showAlert(
+                    'user-info-alert',
+                    'info',
+                    'User lookup requires admin API access. Please implement this via a server-side function with admin credentials.'
+                );
+                
+                // TODO: Implement server-side user lookup
+                // This would need to call your backend API with admin credentials
+                // Example:
+                // const response = await fetch('/api/admin/users/lookup', {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({ email })
+                // });
+                // const user = await response.json();
+                
+            } catch (error) {
+                console.error('User lookup error:', error);
+                showAlert(
+                    'user-info-alert',
+                    'error',
+                    `Error: ${error.message || 'Failed to lookup user.'}`
+                );
+            } finally {
+                // Re-enable button
+                btn.disabled = false;
+                btn.innerHTML = 'Search User';
+            }
+        });
+
+        function showAlert(elementId, type, message) {
+            const alert = document.getElementById(elementId);
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+            alert.classList.remove('hidden');
+            
+            // Auto-hide success messages after 10 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    alert.classList.add('hidden');
+                }, 10000);
+            }
+        }
+    </script>
+</body>
+</html>
