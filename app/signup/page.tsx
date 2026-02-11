@@ -24,10 +24,36 @@ export default function SignUpPage() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [loading, setLoading] = useState(false)
 
-  const handleSignUp = (e: React.FormEvent) => {
+  const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
-    router.push("/garden")
+    setError("")
+    setLoading(true)
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      setError("Supabase is not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.")
+      setLoading(false)
+      return
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey)
+    const { error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: { full_name: name },
+      },
+    })
+
+    if (authError) {
+      setError(authError.message)
+      setLoading(false)
+      return
+    }
+
+    router.push("/garden/dashboard")
   }
 
   const handleGitHubSignIn = async () => {
@@ -38,7 +64,7 @@ export default function SignUpPage() {
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
     await supabase.auth.signInWithOAuth({
       provider: "github",
-      options: { redirectTo: `${window.location.origin}/garden` },
+      options: { redirectTo: `${window.location.origin}/garden/dashboard` },
     })
   }
 
@@ -51,6 +77,11 @@ export default function SignUpPage() {
         </div>
 
         <div className="border border-[#e8e8e8] bg-white p-8">
+          {error && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-sm text-red-700">
+              {error}
+            </div>
+          )}
           <form onSubmit={handleSignUp} className="space-y-5">
             <div>
               <label htmlFor="name" className="block text-sm text-[#666666] mb-1.5">Full Name</label>
@@ -90,9 +121,10 @@ export default function SignUpPage() {
             </div>
             <button
               type="submit"
-              className="w-full py-3 bg-[#1a1a1a] text-white rounded text-sm font-medium hover:bg-[#333333] transition-colors"
+              disabled={loading}
+              className="w-full py-3 bg-[#1a1a1a] text-white rounded text-sm font-medium hover:bg-[#333333] transition-colors disabled:opacity-50"
             >
-              SIGN UP
+              {loading ? "Creating account..." : "SIGN UP"}
             </button>
           </form>
 

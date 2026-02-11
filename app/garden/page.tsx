@@ -1,120 +1,88 @@
 "use client"
 
-import { useState } from "react"
 import { Cardo } from "next/font/google"
 import Link from "next/link"
 
 const cardo = Cardo({ subsets: ["latin"], weight: ["400", "700"] })
 
-export default function GardenPage() {
-  const [content, setContent] = useState("")
-
+function SeedlingIcon() {
   return (
-    <div className={`${cardo.className} min-h-screen bg-[#fefefe] text-[#1a1a1a]`} style={{ lineHeight: 1.7 }}>
-      <header className="bg-[#fefefe] px-8 py-6 sticky top-0 z-50 border-b border-[#e8e8e8]">
-        <div className="max-w-[1200px] mx-auto flex justify-between items-center">
-          <div className="flex items-center gap-3">
-            <Link href="/" className="text-xl font-medium tracking-tight text-[#1a1a1a] hover:opacity-70 transition-opacity">
-              Page Gallery
-            </Link>
-            <span className="px-3 py-1 bg-[#2d7d4e] text-white text-xs rounded uppercase tracking-wider">
-              Garden
-            </span>
-          </div>
-          <nav className="flex gap-6 items-center">
-            <Link href="/garden" className="text-[#1a1a1a] text-sm font-medium">My Garden</Link>
-            <Link href="/" className="text-[#999999] hover:text-[#1a1a1a] text-sm transition-colors">Gallery</Link>
-            <Link
-              href="/signin"
-              className="text-sm text-[#999999] hover:text-[#1a1a1a] transition-colors"
-            >
-              Sign Out
-            </Link>
-          </nav>
+    <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="22" fill="rgba(125,160,120,0.15)" />
+      <path d="M24 34V22" stroke="#7da078" strokeWidth="2" strokeLinecap="round" />
+      <path d="M24 26c-4-6-10-5-10-5s1 6 5 9c2.5 1.8 5 1 5 1" stroke="#7da078" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+      <path d="M24 22c4-6 10-5 10-5s-1 6-5 9c-2.5 1.8-5 1-5 1" stroke="#7da078" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+    </svg>
+  )
+}
+
+function ArrowRightIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M5 12h14M12 5l7 7-7 7" />
+    </svg>
+  )
+}
+
+function UsersIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+      <circle cx="9" cy="7" r="4" />
+      <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+      <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+    </svg>
+  )
+}
+
+export default function GardenLanding() {
+  return (
+    <div className={`${cardo.className} min-h-screen flex flex-col items-center justify-center px-4 relative`} style={{ background: "linear-gradient(180deg, #1a2332 0%, #1e2a3a 40%, #1a2332 100%)", lineHeight: 1.7 }}>
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        {Array.from({ length: 60 }).map((_, i) => (
+          <div
+            key={i}
+            className="absolute rounded-full bg-white"
+            style={{
+              width: `${1 + (i % 3)}px`,
+              height: `${1 + (i % 3)}px`,
+              top: `${(i * 17.3) % 100}%`,
+              left: `${(i * 23.7) % 100}%`,
+              opacity: 0.2 + (i % 5) * 0.1,
+            }}
+          />
+        ))}
+      </div>
+
+      <div className="relative z-10 text-center">
+        <div className="flex justify-center mb-6">
+          <SeedlingIcon />
         </div>
-      </header>
 
-      <main className="max-w-[1200px] mx-auto px-8 py-12">
-        <div className="mb-10">
-          <h1 className="text-3xl font-medium mb-2">Your Garden</h1>
-          <p className="text-[#999999] text-sm">A private space for your writing. Tend your words here.</p>
+        <h1 className="text-5xl font-medium text-[#e8e0d4] mb-4" style={{ fontStyle: "italic" }}>
+          The Garden
+        </h1>
+
+        <p className="text-[#a0a8b0] text-base mb-2">A private space for writers.</p>
+        <p className="text-[#808890] text-sm mb-10">Sign in to tend your garden.</p>
+
+        <div className="flex gap-4 justify-center">
+          <Link
+            href="/garden/signin"
+            className="flex items-center gap-2 px-8 py-3 border border-[rgba(125,160,120,0.3)] rounded text-[#c0c8c0] text-sm hover:border-[rgba(125,160,120,0.6)] hover:text-white transition-all"
+          >
+            <ArrowRightIcon />
+            Sign In
+          </Link>
+          <Link
+            href="/garden/signup"
+            className="flex items-center gap-2 px-8 py-3 border border-[rgba(125,160,120,0.3)] bg-[rgba(125,160,120,0.1)] rounded text-[#c0c8c0] text-sm hover:border-[rgba(125,160,120,0.6)] hover:text-white transition-all"
+          >
+            <UsersIcon />
+            Create Account
+          </Link>
         </div>
-
-        <div className="grid grid-cols-[1fr_320px] gap-10">
-          <div>
-            <div className="border border-[#e8e8e8] bg-white p-8 mb-8">
-              <h2 className="text-lg font-medium mb-4">New Entry</h2>
-              <input
-                type="text"
-                placeholder="Title your piece..."
-                className="w-full px-4 py-3 border border-[#e8e8e8] rounded text-sm bg-white focus:outline-none focus:border-[#1a1a1a] transition-colors mb-4"
-              />
-              <textarea
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-                placeholder="Begin writing..."
-                rows={12}
-                className="w-full px-4 py-3 border border-[#e8e8e8] rounded text-sm bg-white focus:outline-none focus:border-[#1a1a1a] transition-colors resize-none"
-              />
-              <div className="flex justify-between items-center mt-4">
-                <div className="flex gap-2">
-                  <select className="px-3 py-2 border border-[#e8e8e8] rounded text-sm bg-white focus:outline-none focus:border-[#1a1a1a] transition-colors">
-                    <option>Poetry</option>
-                    <option>Prose</option>
-                    <option>Essay</option>
-                    <option>Hybrid</option>
-                  </select>
-                </div>
-                <div className="flex gap-3">
-                  <button className="px-6 py-2 border border-[#e8e8e8] rounded text-sm text-[#666666] hover:border-[#1a1a1a] hover:text-[#1a1a1a] transition-colors">
-                    Save Draft
-                  </button>
-                  <button className="px-6 py-2 bg-[#1a1a1a] text-white rounded text-sm font-medium hover:bg-[#333333] transition-colors">
-                    Plant in Garden
-                  </button>
-                </div>
-              </div>
-            </div>
-
-            <div className="border border-[#e8e8e8] bg-white p-8">
-              <h2 className="text-lg font-medium mb-6">Your Plantings</h2>
-              <div className="text-center py-12 text-[#999999]">
-                <p className="text-sm mb-2">Your garden is fresh soil.</p>
-                <p className="text-sm">Start writing above to plant your first piece.</p>
-              </div>
-            </div>
-          </div>
-
-          <aside className="sticky top-28 h-fit space-y-6">
-            <div className="border border-[#e8e8e8] bg-white p-6">
-              <h3 className="text-xs uppercase tracking-widest text-[#999999] mb-4 font-medium">Garden Stats</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between text-sm">
-                  <span>Plantings</span>
-                  <span className="font-medium text-[#1a1a1a]">0</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Drafts</span>
-                  <span className="font-medium text-[#1a1a1a]">0</span>
-                </div>
-                <div className="flex justify-between text-sm">
-                  <span>Discovered</span>
-                  <span className="font-medium text-[#1a1a1a]">0</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="border border-[#e8e8e8] bg-white p-6">
-              <h3 className="text-xs uppercase tracking-widest text-[#999999] mb-4 font-medium">How It Works</h3>
-              <div className="space-y-3 text-sm text-[#666666]">
-                <p>Write freely in your garden. Editors browse community gardens looking for exceptional work.</p>
-                <p>When your writing catches an editor's eye, it may be selected for the curated gallery collection.</p>
-                <p>You don't submit. You don't query. You just write.</p>
-              </div>
-            </div>
-          </aside>
-        </div>
-      </main>
+      </div>
     </div>
   )
 }
