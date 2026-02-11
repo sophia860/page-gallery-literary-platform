@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Cardo } from "next/font/google"
 import Link from "next/link"
 import { createClient } from "@supabase/supabase-js"
@@ -19,12 +20,13 @@ function GitHubIcon() {
 }
 
 export default function SignInPage() {
+  const router = useRouter()
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
 
   const handleSignIn = (e: React.FormEvent) => {
     e.preventDefault()
-    // Sign-in logic placeholder
+    router.push("/garden")
   }
 
   const handleGitHubSignIn = async () => {
@@ -35,7 +37,7 @@ export default function SignInPage() {
     const supabase = createClient(supabaseUrl, supabaseAnonKey)
     await supabase.auth.signInWithOAuth({
       provider: "github",
-      options: { redirectTo: window.location.origin },
+      options: { redirectTo: `${window.location.origin}/garden` },
     })
   }
 
