@@ -1,5 +1,5 @@
 {
-  "name": "my-project",
+  "name": "page-gallery-literary-platform",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,6 +11,7 @@
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",
     "@supabase/supabase-js": "^2.49.1",
+    "@supabase/ssr": "^0.5.2",
     "@radix-ui/react-accordion": "1.2.2",
     "@radix-ui/react-alert-dialog": "1.1.4",
     "@radix-ui/react-aspect-ratio": "1.1.1",
