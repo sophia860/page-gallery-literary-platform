@@ -4,12 +4,9 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Cardo } from "next/font/google"
 import Link from "next/link"
-import { createClient } from "@supabase/supabase-js"
+import { createClient } from "@/lib/supabase/client"
 
 const cardo = Cardo({ subsets: ["latin"], weight: ["400", "700"] })
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? ""
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? ""
 
 function GitHubIcon() {
   return (
@@ -31,37 +28,44 @@ export default function SignInPage() {
     setError("")
     setLoading(true)
 
-    if (!supabaseUrl || !supabaseAnonKey) {
-      setError("Supabase is not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.")
+    try {
+      const supabase = createClient()
+      const { error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      })
+
+      if (authError) {
+        setError(authError.message)
+        setLoading(false)
+        return
+      }
+
+      // Redirect to editor dashboard after successful login
+      router.push("/editor-dashboard")
+      router.refresh()
+    } catch (err) {
+      setError("An unexpected error occurred. Please try again.")
       setLoading(false)
-      return
     }
-
-    const supabase = createClient(supabaseUrl, supabaseAnonKey)
-    const { error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    })
-
-    if (authError) {
-      setError(authError.message)
-      setLoading(false)
-      return
-    }
-
-    router.push("/garden/dashboard")
   }
 
   const handleGitHubSignIn = async () => {
-    if (!supabaseUrl || !supabaseAnonKey) {
-      alert("Supabase is not configured. Please set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.")
-      return
+    try {
+      const supabase = createClient()
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "github",
+        options: { 
+          redirectTo: `${window.location.origin}/auth/callback?next=/editor-dashboard` 
+        },
+      })
+      
+      if (error) {
+        setError(error.message)
+      }
+    } catch (err) {
+      setError("Failed to sign in with GitHub. Please try again.")
     }
-    const supabase = createClient(supabaseUrl, supabaseAnonKey)
-    await supabase.auth.signInWithOAuth({
-      provider: "github",
-      options: { redirectTo: `${window.location.origin}/garden` },
-    })
   }
 
   return (
@@ -89,6 +93,7 @@ export default function SignInPage() {
                 className="w-full px-4 py-3 border border-[#e8e8e8] rounded text-sm bg-white focus:outline-none focus:border-[#1a1a1a] transition-colors"
                 placeholder="you@example.com"
                 required
+                disabled={loading}
               />
             </div>
             <div>
@@ -101,12 +106,13 @@ export default function SignInPage() {
                 className="w-full px-4 py-3 border border-[#e8e8e8] rounded text-sm bg-white focus:outline-none focus:border-[#1a1a1a] transition-colors"
                 placeholder="Your password"
                 required
+                disabled={loading}
               />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-[#1a1a1a] text-white rounded text-sm font-medium hover:bg-[#333333] transition-colors disabled:opacity-50"
+              className="w-full py-3 bg-[#1a1a1a] text-white rounded text-sm font-medium hover:bg-[#333333] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "Signing in..." : "SIGN IN"}
             </button>
@@ -122,7 +128,8 @@ export default function SignInPage() {
           {/* GitHub OAuth */}
           <button
             onClick={handleGitHubSignIn}
-            className="w-full py-3 bg-[#24292f] text-white rounded text-sm font-medium hover:bg-[#1b1f23] transition-colors flex items-center justify-center gap-2"
+            disabled={loading}
+            className="w-full py-3 bg-[#24292f] text-white rounded text-sm font-medium hover:bg-[#1b1f23] transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <GitHubIcon />
             Sign in with GitHub
