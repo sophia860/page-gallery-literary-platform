@@ -1,0 +1,18 @@
+name: Run part of project
+
+on:
+  workflow_dispatch:      # run manually from GitHub UI
+  push:
+    branches: [ main ]    # or any branch you like
+
+jobs:
+  run-feature:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install
+      - run: npm run my-specific-script   # only this part
