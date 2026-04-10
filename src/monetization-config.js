@@ -160,6 +160,64 @@ const MONETIZATION_CONFIG = {
     standardFee: 3.00,
     priorityFee: 10.00
   }
+
+    // Founding Member program (one-time investment/pledge)
+  foundingMembers: {
+    enabled: true,
+    tiers: {
+      seed: {
+        id: 'seed',
+        name: 'Seed',
+        minPledge: 25,
+        description: 'Help plant the first seeds of The Page Gallery',
+        perks: [
+          'Founders\' garden listing',
+          'Launch updates newsletter',
+          '1 month free Premium Writer subscription'
+        ]
+      },
+      sprout: {
+        id: 'sprout',
+        name: 'Sprout',
+        minPledge: 75,
+        description: 'Nurture our platform as it grows',
+        perks: [
+          'All Seed perks',
+          '3 months free Premium Writer subscription',
+          '5 submission credits',
+          'Featured in Sprout supporters section'
+        ]
+      },
+      bloom: {
+        id: 'bloom',
+        name: 'Bloom',
+        minPledge: 150,
+        description: 'Watch The Page Gallery blossom with lifetime access',
+        perks: [
+          'All Sprout perks',
+          '6 months free Premium Writer subscription',
+          'Beta access to new features',
+          'Founding member badge',
+          'Priority support'
+        ]
+      },
+      patron: {
+        id: 'patron',
+        name: 'Patron',
+        minPledge: 500,
+        description: 'Become a cornerstone patron with lifetime premium',
+        perks: [
+          'All Bloom perks',
+          'Lifetime Premium Writer subscription',
+          'Quarterly virtual roundtable with founder',
+          'Input on editorial features roadmap',
+          'Patron\'s Circle listing with custom bio'
+        ]
+      }
+    },
+    paymentProcessing: 'deferred', // Collect pledges first, process later
+    displayFoundersGarden: true // Public page showing founding members
+  },
 };
 
 // Export for use in other modules
