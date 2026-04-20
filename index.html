@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Page Gallery - Literary Submission Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cardo:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --cream-light: #FFF9F0;
+            --cream: #F5EDE0;
+            --cream-dark: #E8DCC8;
+            --slate: #2C3E50;
+            --slate-light: #4A5F7F;
+            --slate-lighter: #7B8FA3;
+            --accent-gold: #D4AF37;
+            --accent-green: #7BA05B;
+            --error-red: #C85A54;
+            --success-green: #5A8C6F;
+        }
+
+        body {
+            font-family: 'Cardo', Georgia, serif;
+            background-color: var(--cream-light);
+            color: var(--slate);
+            line-height: 1.6;
+            padding: 2rem 1rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--cream-dark);
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--slate);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: var(--slate-light);
+            font-style: italic;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(44, 62, 80, 0.1);
+        }
+
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            color: var(--slate);
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--slate);
+        }
+
+        .required {
+            color: var(--error-red);
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--cream-dark);
+            border-radius: 4px;
+            font-family: 'Cardo', Georgia, serif;
+            font-size: 1rem;
+            color: var(--slate);
+            background-color: var(--cream-light);
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .char-count {
+            text-align: right;
+            font-size: 0.9rem;
+            color: var(--slate-lighter);
+            margin-top: 0.25rem;
+        }
+
+        .char-count.warning {
+            color: var(--error-red);
+        }
+
+        .error-message {
+            color: var(--error-red);
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        input.error,
+        select.error,
+        textarea.error {
+            border-color: var(--error-red);
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 4px;
+            font-family: 'Cardo', Georgia, serif;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--slate);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--slate-light);
+        }
+
+        .btn-primary:disabled {
+            background-color: var(--slate-lighter);
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background-color: var(--cream-dark);
+            color: var(--slate);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--cream);
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .submissions-list {
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .submission-item {
+            background-color: var(--cream-light);
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 4px;
+            border-left: 4px solid var(--accent-gold);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submission-item:hover {
+            background-color: var(--cream);
+            border-left-color: var(--slate);
+        }
+
+        .submission-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .submission-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--slate);
+            margin-bottom: 0.25rem;
+        }
+
+        .submission-author {
+            color: var(--slate-light);
+            font-size: 0.9rem;
+        }
+
+        .submission-meta {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin-top: 0.5rem;
+        }
+
+        .genre-tag {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background-color: var(--accent-gold);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .status-pending {
+            background-color: var(--slate-lighter);
+            color: white;
+        }
+
+        .status-under-review {
+            background-color: var(--accent-gold);
+            color: white;
+        }
+
+        .status-accepted {
+            background-color: var(--success-green);
+            color: white;
+        }
+
+        .status-rejected {
+            background-color: var(--error-red);
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--slate-lighter);
+        }
+
+        .empty-state-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(44, 62, 80, 0.7);
+            overflow: auto;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--cream-dark);
+        }
+
+        .modal-title {
+            font-size: 1.8rem;
+            color: var(--slate);
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--slate-lighter);
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: var(--slate);
+        }
+
+        .modal-body {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .detail-label {
+            font-weight: 700;
+            color: var(--slate);
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+
+        .detail-value {
+            color: var(--slate-light);
+        }
+
+        .content-preview {
+            background-color: var(--cream-light);
+            padding: 1rem;
+            border-radius: 4px;
+            border-left: 4px solid var(--accent-gold);
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .status-select {
+            flex: 1;
+            min-width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Page Gallery</h1>
+            <p class="subtitle">A literary submission platform for sharing poetry, prose, and essays</p>
+        </header>
+
+        <div class="main-content">
+            <!-- Submission Form -->
+            <div class="card">
+                <h2>Submit Your Work</h2>
+                
+                <div id="formAlert" class="alert" role="alert"></div>
+
+                <form id="submissionForm">
+                    <div class="form-group">
+                        <label for="title">Title <span class="required">*</span></label>
+                        <input type="text" id="title" name="title" required aria-required="true">
+                        <div class="error-message" id="titleError" role="alert"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="author">Author Name <span class="required">*</span></label>
+                        <input type="text" id="author" name="author" required aria-required="true">
+                        <div class="error-message" id="authorError" role="alert"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" required aria-required="true">
+                        <div class="error-message" id="emailError" role="alert"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="genre">Genre <span class="required">*</span></label>
+                        <select id="genre" name="genre" required aria-required="true">
+                            <option value="">Select a genre...</option>
+                            <option value="Poetry">Poetry</option>
+                            <option value="Prose">Prose</option>
+                            <option value="Essay">Essay</option>
+                            <option value="Short Story">Short Story</option>
+                            <option value="Flash Fiction">Flash Fiction</option>
+                            <option value="Creative Nonfiction">Creative Nonfiction</option>
+                        </select>
+                        <div class="error-message" id="genreError" role="alert"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="content">Content <span class="required">*</span></label>
+                        <textarea id="content" name="content" required aria-required="true" aria-describedby="contentCount"></textarea>
+                        <div class="char-count" id="contentCount" aria-live="polite">0 / 5000 characters</div>
+                        <div class="error-message" id="contentError" role="alert"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Submit Work</button>
+                </form>
+            </div>
+
+            <!-- Recent Submissions -->
+            <div class="card">
+                <h2>Recent Submissions</h2>
+                <div id="submissionsList" class="submissions-list">
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <p>No submissions yet. Be the first to share your work!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Submission Details -->
+    <div id="submissionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle" class="modal-title"></h2>
+                <button class="close-btn" id="closeModal" aria-label="Close modal">&times;</button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="detail-group">
+                    <span class="detail-label">Author:</span>
+                    <span class="detail-value" id="modalAuthor"></span>
+                </div>
+
+                <div class="detail-group">
+                    <span class="detail-label">Email:</span>
+                    <span class="detail-value" id="modalEmail"></span>
+                </div>
+
+                <div class="detail-group">
+                    <span class="detail-label">Genre:</span>
+                    <span class="genre-tag" id="modalGenre"></span>
+                </div>
+
+                <div class="detail-group">
+                    <span class="detail-label">Submission Date:</span>
+                    <span class="detail-value" id="modalDate"></span>
+                </div>
+
+                <div class="detail-group">
+                    <span class="detail-label">Content:</span>
+                    <div class="content-preview" id="modalContent"></div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <div class="form-group status-select">
+                    <label for="statusSelect">Update Status:</label>
+                    <select id="statusSelect" class="status-select">
+                        <option value="pending">Pending</option>
+                        <option value="under-review">Under Review</option>
+                        <option value="accepted">Accepted</option>
+                        <option value="rejected">Rejected</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" id="updateStatus">Update Status</button>
+                <button class="btn btn-secondary" id="closeModalBtn">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        const state = {
+            submissions: [],
+            currentSubmissionId: null,
+            previousFocusElement: null
+        };
+
+        // DOM Elements
+        const elements = {
+            form: document.getElementById('submissionForm'),
+            formAlert: document.getElementById('formAlert'),
+            submissionsList: document.getElementById('submissionsList'),
+            modal: document.getElementById('submissionModal'),
+            contentTextarea: document.getElementById('content'),
+            contentCount: document.getElementById('contentCount')
+        };
+
+        // Constants
+        const MAX_CONTENT_LENGTH = 5000;
+
+        // Initialize app
+        function init() {
+            loadSubmissions();
+            attachEventListeners();
+            updateCharCount();
+        }
+
+        // Load submissions from localStorage
+        function loadSubmissions() {
+            try {
+                const saved = localStorage.getItem('pageGallerySubmissions');
+                if (saved) {
+                    state.submissions = JSON.parse(saved);
+                    renderSubmissions();
+                }
+            } catch (error) {
+                console.error('Failed to load submissions:', error);
+                state.submissions = [];
+            }
+        }
+
+        // Save submissions to localStorage
+        function saveSubmissions() {
+            try {
+                localStorage.setItem('pageGallerySubmissions', JSON.stringify(state.submissions));
+            } catch (error) {
+                console.error('Failed to save submissions:', error);
+                showAlert('Unable to save submission. Please check your browser storage settings.', 'error');
+            }
+        }
+
+        // Attach event listeners
+        function attachEventListeners() {
+            // Form submission
+            elements.form.addEventListener('submit', handleFormSubmit);
+
+            // Content character count
+            elements.contentTextarea.addEventListener('input', updateCharCount);
+
+            // Modal events
+            document.getElementById('closeModal').addEventListener('click', closeModal);
+            document.getElementById('closeModalBtn').addEventListener('click', closeModal);
+            document.getElementById('updateStatus').addEventListener('click', updateSubmissionStatus);
+
+            // Close modal on background click
+            elements.modal.addEventListener('click', (e) => {
+                if (e.target === elements.modal) {
+                    closeModal();
+                }
+            });
+
+            // Close modal on ESC key
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && elements.modal.classList.contains('show')) {
+                    closeModal();
+                }
+            });
+
+            // Real-time validation
+            document.getElementById('title').addEventListener('blur', () => validateField('title'));
+            document.getElementById('author').addEventListener('blur', () => validateField('author'));
+            document.getElementById('email').addEventListener('blur', () => validateField('email'));
+            document.getElementById('genre').addEventListener('change', () => validateField('genre'));
+            elements.contentTextarea.addEventListener('blur', () => validateField('content'));
+        }
+
+        // Update character count
+        function updateCharCount() {
+            const content = elements.contentTextarea.value;
+            const count = content.length;
+            elements.contentCount.textContent = `${count} / ${MAX_CONTENT_LENGTH} characters`;
+            
+            if (count > MAX_CONTENT_LENGTH) {
+                elements.contentCount.classList.add('warning');
+            } else {
+                elements.contentCount.classList.remove('warning');
+            }
+        }
+
+        // Validate individual field
+        function validateField(fieldName) {
+            const field = document.getElementById(fieldName);
+            const errorEl = document.getElementById(`${fieldName}Error`);
+            let isValid = true;
+            let errorMessage = '';
+
+            // Clear previous error
+            field.classList.remove('error');
+            errorEl.classList.remove('show');
+
+            switch(fieldName) {
+                case 'title':
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        errorMessage = 'Title is required';
+                    } else if (field.value.trim().length < 3) {
+                        isValid = false;
+                        errorMessage = 'Title must be at least 3 characters';
+                    }
+                    break;
+
+                case 'author':
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        errorMessage = 'Author name is required';
+                    } else if (field.value.trim().length < 2) {
+                        isValid = false;
+                        errorMessage = 'Author name must be at least 2 characters';
+                    }
+                    break;
+
+                case 'email':
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        errorMessage = 'Email is required';
+                    } else if (!emailRegex.test(field.value.trim())) {
+                        isValid = false;
+                        errorMessage = 'Please enter a valid email address';
+                    }
+                    break;
+
+                case 'genre':
+                    if (!field.value) {
+                        isValid = false;
+                        errorMessage = 'Please select a genre';
+                    }
+                    break;
+
+                case 'content':
+                    if (!field.value.trim()) {
+                        isValid = false;
+                        errorMessage = 'Content is required';
+                    } else if (field.value.trim().length < 50) {
+                        isValid = false;
+                        errorMessage = 'Content must be at least 50 characters';
+                    } else if (field.value.length > MAX_CONTENT_LENGTH) {
+                        isValid = false;
+                        errorMessage = `Content must not exceed ${MAX_CONTENT_LENGTH} characters`;
+                    }
+                    break;
+            }
+
+            if (!isValid) {
+                field.classList.add('error');
+                errorEl.textContent = errorMessage;
+                errorEl.classList.add('show');
+            }
+
+            return isValid;
+        }
+
+        // Validate entire form
+        function validateForm() {
+            const fields = ['title', 'author', 'email', 'genre', 'content'];
+            let isValid = true;
+
+            fields.forEach(field => {
+                if (!validateField(field)) {
+                    isValid = false;
+                }
+            });
+
+            return isValid;
+        }
+
+        // Handle form submission
+        function handleFormSubmit(e) {
+            e.preventDefault();
+
+            if (!validateForm()) {
+                showAlert('Please fix the errors before submitting', 'error');
+                return;
+            }
+
+            const formData = new FormData(e.target);
+            const submission = {
+                id: Date.now() + Math.random(),
+                title: formData.get('title').trim(),
+                author: formData.get('author').trim(),
+                email: formData.get('email').trim(),
+                genre: formData.get('genre'),
+                content: formData.get('content').trim(),
+                status: 'pending',
+                date: new Date().toISOString()
+            };
+
+            state.submissions.unshift(submission);
+            saveSubmissions();
+            renderSubmissions();
+            
+            // Reset form
+            e.target.reset();
+            updateCharCount();
+            
+            // Clear any error states
+            document.querySelectorAll('.error').forEach(el => el.classList.remove('error'));
+            document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
+
+            showAlert('Submission received successfully! Thank you for sharing your work.', 'success');
+        }
+
+        // Show alert message
+        function showAlert(message, type) {
+            elements.formAlert.textContent = message;
+            elements.formAlert.className = `alert alert-${type} show`;
+            
+            setTimeout(() => {
+                elements.formAlert.classList.remove('show');
+            }, 5000);
+        }
+
+        // Render submissions list
+        function renderSubmissions() {
+            if (state.submissions.length === 0) {
+                elements.submissionsList.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📚</div>
+                        <p>No submissions yet. Be the first to share your work!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            elements.submissionsList.innerHTML = state.submissions.map(submission => {
+                const date = new Date(submission.date);
+                const formattedDate = date.toLocaleDateString('en-US', { 
+                    month: 'short', 
+                    day: 'numeric', 
+                    year: 'numeric' 
+                });
+
+                return `
+                    <div class="submission-item" data-id="${submission.id}" role="button" tabindex="0" aria-label="View submission: ${submission.title}">
+                        <div class="submission-header">
+                            <div>
+                                <div class="submission-title">${escapeHtml(submission.title)}</div>
+                                <div class="submission-author">by ${escapeHtml(submission.author)}</div>
+                            </div>
+                        </div>
+                        <div class="submission-meta">
+                            <span class="genre-tag">${escapeHtml(submission.genre)}</span>
+                            <span class="status-badge status-${submission.status}">${formatStatus(submission.status)}</span>
+                            <span class="detail-value">${formattedDate}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Add click handlers to submission items
+            document.querySelectorAll('.submission-item').forEach(item => {
+                item.addEventListener('click', () => openModal(parseInt(item.dataset.id)));
+                item.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openModal(parseInt(item.dataset.id));
+                    }
+                });
+            });
+        }
+
+        // Format status text
+        function formatStatus(status) {
+            return status.split('-').map(word => 
+                word.charAt(0).toUpperCase() + word.slice(1)
+            ).join(' ');
+        }
+
+        // Escape HTML to prevent XSS
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Open modal with submission details
+        function openModal(submissionId) {
+            const submission = state.submissions.find(s => s.id === submissionId);
+            if (!submission) return;
+
+            state.currentSubmissionId = submissionId;
+            state.previousFocusElement = document.activeElement;
+
+            const date = new Date(submission.date);
+            const formattedDate = date.toLocaleDateString('en-US', { 
+                month: 'long', 
+                day: 'numeric', 
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            document.getElementById('modalTitle').textContent = submission.title;
+            document.getElementById('modalAuthor').textContent = submission.author;
+            document.getElementById('modalEmail').textContent = submission.email;
+            document.getElementById('modalGenre').textContent = submission.genre;
+            document.getElementById('modalDate').textContent = formattedDate;
+            document.getElementById('modalContent').textContent = submission.content;
+            document.getElementById('statusSelect').value = submission.status;
+
+            elements.modal.classList.add('show');
+            document.getElementById('closeModal').focus();
+        }
+
+        // Close modal
+        function closeModal() {
+            elements.modal.classList.remove('show');
+            state.currentSubmissionId = null;
+            
+            // Return focus to the element that opened the modal
+            if (state.previousFocusElement) {
+                state.previousFocusElement.focus();
+                state.previousFocusElement = null;
+            }
+        }
+
+        // Update submission status
+        function updateSubmissionStatus() {
+            if (!state.currentSubmissionId) return;
+
+            const newStatus = document.getElementById('statusSelect').value;
+            const validStatuses = ['pending', 'under-review', 'accepted', 'rejected'];
+            
+            if (!validStatuses.includes(newStatus)) {
+                showAlert('Invalid status selected', 'error');
+                return;
+            }
+
+            const submission = state.submissions.find(s => s.id === state.currentSubmissionId);
+            
+            if (submission) {
+                submission.status = newStatus;
+                saveSubmissions();
+                renderSubmissions();
+
+                showAlert(`Status updated to: ${formatStatus(newStatus)}`, 'success');
+                closeModal();
+            }
+        }
+
+        // Initialize the application
+        init();
+    </script>
+</body>
+</html>
